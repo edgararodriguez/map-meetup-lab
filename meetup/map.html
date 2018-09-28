@@ -19,20 +19,27 @@
 </div>
   <script>
   var mymap = L.map('mapid').setView([40.038, -76.306], 10);
-  // L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=', {
+  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token= PLACEHOLDER', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     id: 'mapbox.streets',
-    // accessToken: ''
+    accessToken: 'PLACEHOLDER'
 }).addTo(mymap);
 
 $.ajax({
   type: "GET",
-  url:"https://api.meetup.com/find/upcoming_events?key=INSERTKEYHERE",
+  url:"https://api.meetup.com/find/upcoming_events?key=PLACEHOLDER",
   crossDomain: true,
   dataType: "jsonp",
   success: function (data) {
-    console.log(data);
+    // console.log(data);
+    for(var i=0; i < Object.keys(data.data['events']).length; i++) {
+      var latitiude = data.data['events'][i]['group']['lat'];
+      var longitude = data.data['events'][i]['group']['lon'];
+      var coordinates = [latitiude, longitude];
+      L.marker(coordinates).addTo(mymap)
+      .bindPopup('<strong>'+data.data['events'][i]['group']['name']+'</strong><br><strong>'+data.data['events'][i]['local_date']+'</strong></br><br><strong>'+data.data['events'][i]['local_time']+'<strong></br>');
+    };
   },
   error: function (xhr, status){
     // console.log(status);
